@@ -11,13 +11,6 @@ import (
 	"github.com/goware/urlx"
 )
 
-func TestShouldReturnNilIfNoHeadersWhereSet(t *testing.T) {
-	h := new(headersList)
-	if headersToFastHTTPHeaders(h) != nil {
-		t.Fail()
-	}
-}
-
 func TestShouldReturnEmptyHeadersIfNoHeaadersWhereSet(t *testing.T) {
 	h := new(headersList)
 	if len(headersToHTTPHeaders(h)) != 0 {
@@ -33,16 +26,6 @@ func TestShouldProperlyConvertToHttpHeaders(t *testing.T) {
 		if err := h.Set(hs); err != nil {
 			t.Error(err)
 		}
-	}
-	fh := headersToFastHTTPHeaders(h)
-	{
-		e, a := []byte("application/json"), fh.Peek("Content-Type")
-		if !bytes.Equal(e, a) {
-			t.Errorf("Expected %v, but got %v", e, a)
-		}
-	}
-	if e, a := []byte("xxx42xxx"), fh.Peek("Custom-Header"); !bytes.Equal(e, a) {
-		t.Errorf("Expected %v, but got %v", e, a)
 	}
 
 	nh := headersToHTTPHeaders(h)
@@ -151,7 +134,6 @@ func TestHTTP1Clients(t *testing.T) {
 	}
 	clients := []client{
 		newHTTPClient(cc),
-		newFastHTTPClient(cc),
 	}
 	for _, c := range clients {
 		bytesRead, bytesWritten = 0, 0

@@ -9,7 +9,7 @@ import (
 
 var (
 	serverPort = flag.String("port", "8080", "port to use for benchmarks")
-	clientType = flag.String("client-type", "fasthttp",
+	clientType = flag.String("client-type", "http1",
 		"client to use in benchmarks")
 )
 

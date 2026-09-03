@@ -60,7 +60,7 @@ func newKingpinParser() argsParser {
 		insecure:     false,
 		url:          "",
 		rate:         new(nullableUint64),
-		clientType:   fhttp,
+		clientType:   nhttp1,
 		printSpec:    new(nullableString),
 		noPrint:      false,
 		formatSpec:   "plain-text",
@@ -107,8 +107,7 @@ func newKingpinParser() argsParser {
 			" chain and host name").
 		Short('k').
 		BoolVar(&kparser.insecure)
-	app.Flag("disableKeepAlives",
-		"Disable HTTP keep-alive. For fasthttp use -H 'Connection: close'").
+	app.Flag("disableKeepAlives", "Disable HTTP keep-alive").
 		Short('a').
 		BoolVar(&kparser.disableKeepAlives)
 
@@ -130,12 +129,6 @@ func newKingpinParser() argsParser {
 		Short('r').
 		SetValue(kparser.rate)
 
-	app.Flag("fasthttp", "Use fasthttp client").
-		Action(func(*kingpin.ParseContext) error {
-			kparser.clientType = fhttp
-			return nil
-		}).
-		Bool()
 	app.Flag("http1", "Use net/http client with forced HTTP/1.x").
 		Action(func(*kingpin.ParseContext) error {
 			kparser.clientType = nhttp1

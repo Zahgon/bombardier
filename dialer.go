@@ -32,26 +32,6 @@ func (cc *countingConn) Write(b []byte) (n int, err error) {
 	return
 }
 
-var fasthttpDialFunc = func(
-	bytesRead, bytesWritten *int64,
-	dialTimeout time.Duration,
-) func(string) (net.Conn, error) {
-	return func(address string) (net.Conn, error) {
-		conn, err := net.DialTimeout("tcp", address, dialTimeout)
-		if err != nil {
-			return nil, err
-		}
-
-		wrappedConn := &countingConn{
-			Conn:         conn,
-			bytesRead:    bytesRead,
-			bytesWritten: bytesWritten,
-		}
-
-		return wrappedConn, nil
-	}
-}
-
 var httpDialContextFunc = func(
 	bytesRead, bytesWritten *int64,
 	dialTimeout time.Duration,

@@ -8,8 +8,6 @@ import (
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/valyala/fasthttp"
 )
 
 type client interface {
@@ -34,84 +32,6 @@ type clientOpts struct {
 	bodProd bodyStreamProducer
 
 	bytesRead, bytesWritten *int64
-}
-
-type fasthttpClient struct {
-	client *fasthttp.Client
-
-	headers *fasthttp.RequestHeader
-	uri     *fasthttp.URI
-	method  string
-
-	body    *string
-	bodProd bodyStreamProducer
-}
-
-func newFastHTTPClient(opts *clientOpts) client {
-	c := new(fasthttpClient)
-	uri := fasthttp.AcquireURI()
-	if err := uri.Parse(
-		[]byte(opts.requestURL.Host),
-		[]byte(opts.requestURL.String()),
-	); err != nil {
-		// opts.requestURL must always be valid
-		panic(err)
-	}
-	c.uri = uri
-	c.client = &fasthttp.Client{
-		MaxConnsPerHost:               int(opts.maxConns),
-		ReadTimeout:                   opts.timeout,
-		WriteTimeout:                  opts.timeout,
-		DisableHeaderNamesNormalizing: true,
-		TLSConfig:                     opts.tlsConfig,
-		Dial: fasthttpDialFunc(
-			opts.bytesRead, opts.bytesWritten,
-			opts.timeout,
-		),
-	}
-	c.headers = headersToFastHTTPHeaders(opts.headers)
-	c.method, c.body = opts.method, opts.body
-	c.bodProd = opts.bodProd
-	return client(c)
-}
-
-func (c *fasthttpClient) do() (
-	code int, usTaken uint64, err error,
-) {
-	// prepare the request
-	req := fasthttp.AcquireRequest()
-	resp := fasthttp.AcquireResponse()
-	if c.headers != nil {
-		c.headers.CopyTo(&req.Header)
-	}
-	req.Header.SetMethod(c.method)
-	req.SetURI(c.uri)
-	req.UseHostHeader = true
-	if c.body != nil {
-		req.SetBodyString(*c.body)
-	} else {
-		bs, bserr := c.bodProd()
-		if bserr != nil {
-			return 0, 0, bserr
-		}
-		req.SetBodyStream(bs, -1)
-	}
-
-	// fire the request
-	start := time.Now()
-	err = c.client.Do(req, resp)
-	if err != nil {
-		code = -1
-	} else {
-		code = resp.StatusCode()
-	}
-	usTaken = uint64(time.Since(start).Nanoseconds() / 1000)
-
-	// release resources
-	fasthttp.ReleaseRequest(req)
-	fasthttp.ReleaseResponse(resp)
-
-	return
 }
 
 type httpClient struct {
@@ -195,17 +115,6 @@ func (c *httpClient) do() (
 	usTaken = uint64(time.Since(start).Nanoseconds() / 1000)
 
 	return
-}
-
-func headersToFastHTTPHeaders(h *headersList) *fasthttp.RequestHeader {
-	if len(*h) == 0 {
-		return nil
-	}
-	res := new(fasthttp.RequestHeader)
-	for _, header := range *h {
-		res.Set(header.key, header.value)
-	}
-	return res
 }
 
 func headersToHTTPHeaders(h *headersList) http.Header {

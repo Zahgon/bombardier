@@ -160,19 +160,10 @@ func newBombardier(c config) (*bombardier, error) {
 }
 
 func makeHTTPClient(clientType clientTyp, cc *clientOpts) client {
-	var cl client
-	switch clientType {
-	case nhttp1:
-		cl = newHTTPClient(cc)
-	case nhttp2:
+	if clientType == nhttp2 {
 		cc.HTTP2 = true
-		cl = newHTTPClient(cc)
-	case fhttp:
-		fallthrough
-	default:
-		cl = newFastHTTPClient(cc)
 	}
-	return cl
+	return newHTTPClient(cc)
 }
 
 func (b *bombardier) prepareTemplate() (*template.Template, error) {

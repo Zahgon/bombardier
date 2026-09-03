@@ -157,15 +157,12 @@ func canHaveBody(method string) bool {
 type clientTyp int
 
 const (
-	fhttp clientTyp = iota
-	nhttp1
+	nhttp1 clientTyp = iota
 	nhttp2
 )
 
 func (ct clientTyp) String() string {
 	switch ct {
-	case fhttp:
-		return "FastHTTP"
 	case nhttp1:
 		return "net/http v1.x"
 	case nhttp2:

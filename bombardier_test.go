@@ -109,11 +109,7 @@ func testBombardierShouldSendHeaders(clientType clientTyp, t *testing.T) {
 		{"Header-Two", "value-two"},
 	})
 
-	// It's a bit hacky, but FastHTTP can't send Host header correctly
-	// as of now
-	if clientType != fhttp {
-		requestHeaders = append(requestHeaders, header{"Host", "web"})
-	}
+	requestHeaders = append(requestHeaders, header{"Host", "web"})
 
 	s := httptest.NewServer(
 		http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -471,7 +467,7 @@ func testBombardierRateLimiting(clientType clientTyp, t *testing.T) {
 }
 
 func testAllClients(parent *testing.T, testFun func(clientTyp, *testing.T)) {
-	clients := []clientTyp{fhttp, nhttp1, nhttp2}
+	clients := []clientTyp{nhttp1, nhttp2}
 	for _, ct := range clients {
 		parent.Run(ct.String(), func(t *testing.T) {
 			testFun(ct, t)

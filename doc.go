@@ -35,7 +35,6 @@ Flags:
 	-n, --requests=[pos. int.]  Number of requests
 	-d, --duration=10s          Duration of test
 	-r, --rate=[pos. int.]      Rate limit in requests per second
-	    --fasthttp              Use fasthttp client
 	    --http1                 Use net/http client with forced HTTP/1.x
 	    --http2                 Use net/http client with enabled HTTP/2.0
 	-p, --print=<spec>          Specifies what to output. Comma-separated list of

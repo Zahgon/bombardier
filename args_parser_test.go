@@ -337,11 +337,6 @@ func TestArgsParsing(t *testing.T) {
 			[][]string{
 				{
 					programName,
-					"--fasthttp",
-					"https://somehost.somedomain",
-				},
-				{
-					programName,
 					"https://somehost.somedomain",
 				},
 			},
@@ -351,7 +346,7 @@ func TestArgsParsing(t *testing.T) {
 				headers:       new(headersList),
 				method:        "GET",
 				url:           ParseURLOrPanic("https://somehost.somedomain"),
-				clientType:    fhttp,
+				clientType:    nhttp1,
 				printIntro:    true,
 				printProgress: true,
 				printResult:   true,

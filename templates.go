@@ -101,9 +101,6 @@ const (
 
 ,"stream":{{ .Stream }},"timeoutSeconds":{{ .Timeout.Seconds }}
 
-{{- if .IsFastHTTP -}}
-,"client":"fasthttp"
-{{- end -}}
 {{- if .IsNetHTTPV1 -}}
 ,"client":"net/http.v1"
 {{- end -}}

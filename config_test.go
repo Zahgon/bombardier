@@ -385,7 +385,6 @@ func TestClientTypToStringConversion(t *testing.T) {
 		in  clientTyp
 		out string
 	}{
-		{fhttp, "FastHTTP"},
 		{nhttp1, "net/http v1.x"},
 		{nhttp2, "net/http v2.0"},
 		{42, "unknown client"},
@@ -400,13 +399,11 @@ func TestClientTypToStringConversion(t *testing.T) {
 
 func clientTypeFromString(s string) clientTyp {
 	switch s {
-	case "fasthttp":
-		return fhttp
 	case "http1":
 		return nhttp1
 	case "http2":
 		return nhttp2
 	default:
-		return fhttp
+		return nhttp1
 	}
 }

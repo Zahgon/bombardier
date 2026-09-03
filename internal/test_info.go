@@ -61,12 +61,6 @@ func (s Spec) IsTestWithNumberOfReqs() bool {
 	return s.TestType == ByNumberOfReqs
 }
 
-// IsFastHTTP tells whether fasthttp were used as HTTP client to
-// perform the test.
-func (s Spec) IsFastHTTP() bool {
-	return s.ClientType == FastHTTP
-}
-
 // IsNetHTTPV1 tells whether Go's default net/http library and
 // HTTP/1.x were used to perform the test.
 func (s Spec) IsNetHTTPV1() bool {
@@ -305,10 +299,8 @@ const (
 type ClientType int
 
 const (
-	// FastHTTP is fasthttp's HTTP client
-	FastHTTP ClientType = iota
 	// NetHTTP1 is Go's default HTTP client with forced HTTP/1.x
-	NetHTTP1
+	NetHTTP1 ClientType = iota
 	// NetHTTP2 is Go's default HTTP client with HTTP/2.0 permitted.
 	NetHTTP2
 )
